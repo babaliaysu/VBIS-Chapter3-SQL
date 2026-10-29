@@ -1,25 +1,20 @@
 -- Exercise 3.26
--- Kursu ən azı 3 dəfə dinləmiş (ən azı 2 dəfə təkrar götürmüş) tələbələr.
--- Nəticə kurs ID-sinə görə sıralanır, təkrarlanan sətir yoxdur.
-SELECT course_id, ID
-FROM takes
-GROUP BY course_id, ID
-HAVING COUNT(*) >= 3
-ORDER BY course_id;
+select course_id, ID
+from takes
+group by course_id, ID
+having COUNT(*) >= 3
+order by course_id;
 
  -- Exercise 3.27
--- Ən azı 3 fərqli kursu ən azı 2 dəfə götürmüş tələbələrin ID-ləri
-SELECT ID
-FROM (SELECT ID, course_id
-      FROM takes
-      GROUP BY ID, course_id
-      HAVING COUNT(*) >= 2) AS repeated
-GROUP BY ID
-HAVING COUNT(*) >= 3;
+select ID
+from (select ID, course_id
+      from takes
+      group by ID, course_id
+      having COUNT(*) >= 2) AS repeated
+group by ID
+having COUNT(*) >= 3;
 
 -- Exercise 3.28
--- Öz departamentində tədris olunan BÜTÜN kursları tədris edən müəllimlər
--- (departamentdə heç kurs yoxdursa müəllim nəticəyə düşməsin deyə EXISTS əlavə edilib)
 SELECT i.name, i.ID
 FROM instructor i
 WHERE EXISTS (SELECT 1 FROM course c WHERE c.dept_name = i.dept_name)
@@ -35,8 +30,6 @@ WHERE EXISTS (SELECT 1 FROM course c WHERE c.dept_name = i.dept_name)
 ORDER BY i.name;
 
 -- Exercise 3.31
--- Tədris etdiyi heç bir kursda "A" qiyməti verməyən müəllimlər
--- (heç kurs tədris etməyənlər də daxildir)
 SELECT i.ID, i.name
 FROM instructor i
 WHERE NOT EXISTS (
@@ -51,7 +44,6 @@ WHERE NOT EXISTS (
 );
 
 -- Exercise 3.32
--- Əvvəlki sorğu + yalnız ən azı bir qeyri-null qiymət vermiş müəllimlər
 SELECT i.ID, i.name
 FROM instructor i
 WHERE NOT EXISTS (
@@ -76,8 +68,6 @@ AND EXISTS (
 );
  
 -- Exercise 3.33
--- Günortadan sonra (12:00 və ya daha gec) bitən ən azı bir bölməsi olan
--- "Comp. Sci." kurslarının ID və adı (təkrarsız)
 SELECT DISTINCT c.course_id, c.title
 FROM course c
 JOIN section s    ON c.course_id = s.course_id
@@ -86,14 +76,12 @@ WHERE c.dept_name = 'Comp. Sci.'
   AND ts.end_hr >= 12;
 
 -- Exercise 3.34
--- Hər bölmədəki tələbələrin sayı (0 tələbəli bölmələr göstərilmir)
 SELECT course_id, sec_id, year, semester, COUNT(ID) AS num
 FROM takes
 GROUP BY course_id, sec_id, year, semester;
  
 
 -- Exercise 3.35
--- Maksimum qeydiyyatı olan bölmə(lər)
 WITH sec_enrollment AS (
     SELECT course_id, sec_id, year, semester, COUNT(ID) AS num
     FROM takes
